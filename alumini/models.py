@@ -34,8 +34,9 @@ class Alumni(models.Model):
 
 class Events(models.Model):
     name = models.CharField(max_length=100)
+    description = models.CharField(max_length=200) 
     date = models.DateField()
-    venue = models.CharField(max_length=200)
+    venue = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name

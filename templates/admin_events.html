@@ -20,56 +20,74 @@
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
     <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+        }
+
         .course-heading {
-            color: rgb(255, 255, 255);
+            color: white;
+            font-weight: bold;
         }
-    
+
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* Increased bottom margin for better spacing */
         }
-    
-        .input-group input[type="text"] {
+
+        .input-group input[type="text"],
+        .input-group input[type="date"] {
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
-            width: 100%;
+            width: 100%; /* Set to 100% to ensure all input fields are the same width */
+            max-width: 400px; /* You can adjust the max width as needed */
             font-size: 16px;
             transition: border-color 0.3s ease;
         }
-    
+
         .input-group input[type="text"]:focus {
-            border-color: #007bff; /* Change this color to your preferred focus color */
+            border-color: #007bff; /* Focus color */
             outline: none;
         }
-    
+
         .input-group button {
             background-color: #007bff; /* Bootstrap primary color */
             color: white;
             border: none;
             border-radius: 5px;
             padding: 10px 20px;
-            margin-top: 10px;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 10px; /* Spacing above button */
         }
-    
+
         .input-group button:hover {
-            background-color: #0056b3; /* Darker shade for hover */
+            background-color: #0056b3; /* Hover shade */
         }
-    
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
         table th, table td {
-            text-align: center; /* Center align text */
-            padding: 10px;
+            text-align: center;
+            padding: 12px;
         }
-    
+
         table th {
-            background-color: #007bff; /* Bootstrap primary color for headers */
-            color: white; /* White text for contrast */
+            background-color: #007bff; /* Header color */
+            color: white;
         }
-    
+
+        table td {
+          color: #ffff;
+        }
+
         .btn-warning {
-            margin: 0 5px; /* Add margin between buttons */
+            margin: 0 5px; /* Spacing between buttons */
         }
     </style>
 <!--
@@ -93,7 +111,7 @@ https://templatemo.com/tm-557-grad-school
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
         <li><a class='external' href="{% url 'admin_dashboard' %}">Home</a></li>
-        <li><a class='external' href="#">Events</a></li>
+        <li><a class='external' href="{% url 'admin_events' %}">Events</a></li>
         <li><a class="external" href="{% url 'admin_course' %}">Courses</a></li>
         <li><a class="external" href="{% url 'users_list' %}">Users</a></li>
         <li><a class="external" href="{% url 'user_request' %}">User Requests</a></li>
@@ -113,37 +131,46 @@ https://templatemo.com/tm-557-grad-school
           <div class="caption">
               <h2>Our Events</h2>
               <div class="container mt-5">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" name="title" placeholder="Course Title" required>
-                        <input type="hidden" name="course_id" id="course_id" value="">
-                        <button type="submit" name="action" value="add" class="btn btn-primary">Add Course</button>
-                    </div>
-                </form>
-
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th><h5 class="course-heading">Course</h5></th>
-                        <th><h5 class="course-heading">Actions</h5></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in courses %}
-                        <tr>
-                            <td class="course-heading">{{ course.title }}</td>
-                            <td>
-                                <form method="POST" action="" style="display:inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="course_id" value="{{ course.id }}">
-                                    <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <form method="POST" action="{% url 'admin_events' %}">
+                  {% csrf_token %}
+                  <div class="input-group">
+                      <input type="text" name="title" placeholder="Event Title" required>
+                      <input type="text" name="description" placeholder="Event Description" required><br>
+                      <input type="date" name="date" placeholder="Event Date" required>
+                      <input type="text" name="venue" placeholder="Event Venue" required>
+                      <input type="hidden" name="event_id" id="event_id" value="">
+                      <button type="submit" name="action" value="add" class="btn btn-primary">Add Event</button>
+                  </div>
+              </form>
+              
+              <table class="table table-bordered mt-3">
+                  <thead>
+                      <tr>
+                          <th><h5 class="course-heading">Name</h5></th>
+                          <th><h5 class="course-heading">Description</h5></th>
+                          <th><h5 class="course-heading">Date</h5></th>
+                          <th><h5 class="course-heading">Venue</h5></th>
+                          <th><h5 class="course-heading">Actions</h5></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for event in events %}
+                          <tr>
+                              <td>{{ event.name }}</td>
+                              <td>{{ event.description }}</td>
+                              <td>{{ event.date }}</td>
+                              <td>{{ event.venue }}</td>
+                              <td>
+                                  <form method="POST" action="" style="display:inline;">
+                                      {% csrf_token %}
+                                      <input type="hidden" name="event_id" value="{{ event.id }}">
+                                      <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+                                  </form>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
       </div>
   </section>
   <!-- ***** Main Banner Area End ***** -->
@@ -155,7 +182,7 @@ https://templatemo.com/tm-557-grad-school
           <p><i class="fa fa-copyright"></i> Copyright 2020 by Grad School  
           
            | Design: <a href="https://templatemo.com" rel="sponsored" target="_parent">TemplateMo</a><br>
-           Distributed By: <a href="https://themewagon.com" rel="sponsored" target="_blank">ThemeWagon</a>
+           Distributed By: <a href="" rel="sponsored" target="_blank">Alansha</a>
           
           </p>
         </div>

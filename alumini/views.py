@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from .models import Course, Alumni, Student
+from .models import Course, Alumni, Student, Events
 import datetime
 
 def home(request):
@@ -332,4 +332,30 @@ def change_password(request, user_id):
     return render(request, 'change_password.html', {'user_id': user_id})
 
 def admin_events(request):
-    return render(request, 'admin_events.html')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        event_id = request.POST.get('event_id')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        venue = request.POST.get('venue')
+
+        if action == 'add':
+            if title and description and date and venue:
+                Events.objects.create(name=title, description=description, date=date, venue=venue)
+                print("Event added successfully.")
+            else:
+                print("All fields are required.")
+
+        elif action == 'delete':
+            if event_id:
+                Events.objects.filter(id=event_id).delete()
+                print("Event deleted successfully.")
+            else:
+                print("Event ID is required.")
+
+        return redirect('admin_events')
+
+    events = Events.objects.all()
+    return render(request, 'admin_events.html', {'events': events})
+
