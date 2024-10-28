@@ -19,6 +19,15 @@
     <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
+    <style>
+      table td {
+        color: white;
+      }
+      table th {
+        color: white;
+        background-color: #007bff;
+      }
+    </style>
 <!--
     
 TemplateMo 557 Grad School
@@ -59,7 +68,38 @@ https://templatemo.com/tm-557-grad-school
       <div class="video-overlay header-text">
           <div class="caption">
               <h2>Job Status</h2>
-              
+              <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Role</th>
+                        <th>Date Joined</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ job.company_name }}</td>
+                        <td>{{ job.role }}</td>
+                        <td>{{ job.date_joined }}</td>
+                        <td>{{ job.salary }}</td>
+                        <td>
+                            {% if job.approved %}
+                                <span class="text-success">Approved</span>
+                            {% else %}
+                                <span class="text-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No job postings available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
           </div>
       </div>
   </section>

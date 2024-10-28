@@ -20,46 +20,66 @@
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
     <style>
-        .section.main-banner {
+              .section.main-banner {
             padding-top: 180px; /* Adjust based on header height */
         }
-         .card {
-            border-radius: 20px;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-            background-color: #062c54;
-            color: #ffffff;
-            margin-bottom: 40px;
-        }
+        form {
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: auto;
+    color: #ffffff;
+}
 
-        .card:hover {
-            transform: scale(1.05); /* Slight zoom effect on hover */
-        }
+form label {
+    font-weight: bold;
+    color: #ffffff;
+}
 
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-        }
+form input[type="text"],
+form input[type="number"],
+form select,
+form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: border-color 0.3s ease;
+}
 
-        .card-title {
-            font-weight: bold;
-            color: #ffffff;
-        }
+form input[type="text"]:focus,
+form input[type="number"]:focus,
+form select:focus,
+form input[type="file"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
 
-        .card-text, .event-date, .event-venue {
-            font-size: 16px;
-            display: none; /* Hidden by default */
-            color: #ffffff;
-        }
+form button[type="submit"] {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
 
-        .card-body {
-            padding: 20px;
-        }
+form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
 
-        .learn-more-btn {
-            background-color: #007bff;
-            color: #fff;
-        }
+form h2 {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
     </style>
 <!--
     
@@ -100,8 +120,32 @@ https://templatemo.com/tm-557-grad-school
 
       <div class="video-overlay header-text">
           <div class="caption">
-            <h2>Our Events</h2>
-            
+            <h2>My Profile</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="{{ alumni.name }}" required><br><br>
+
+    <label for="course">Course:</label>
+    <select id="course" name="course" required>
+        {% for course in courses %}
+            <option value="{{ course.id }}" {% if alumni.course.id == course.id %}selected{% endif %}>
+                {{ course.title }}
+            </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label for="passout">Year of Passing:</label>
+    <input type="number" id="passout" name="passout" value="{{ alumni.passout }}" required><br><br>
+
+    <label for="number">Phone Number:</label>
+    <input type="text" id="number" name="number" value="{{ alumni.number }}" required><br><br>
+
+    <label for="image">Profile Image:</label>
+    <input type="file" id="image" name="image"><br><br>
+
+    <button type="submit">Save Changes</button>
+</form>
             </div>
         </div>
   </section>

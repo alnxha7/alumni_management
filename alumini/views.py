@@ -376,10 +376,27 @@ def alumni_events(request):
     return render(request, 'alumni_events.html', {'events': events})
 
 def alumni_profile(request):
-    return render(request, 'alumni_profile.html')
+    alumni = get_object_or_404(Alumni, email=request.user.email)  # assuming email is unique
+    courses = Course.objects.all()
+
+    if request.method == 'POST':
+        alumni.name = request.POST.get('name')
+        alumni.course_id = request.POST.get('course')
+        alumni.passout = request.POST.get('passout')
+        alumni.number = request.POST.get('number')
+
+        if 'image' in request.FILES:
+            alumni.image = request.FILES['image']
+
+        alumni.is_approved=False
+        alumni.save()
+        return redirect('alumni_profile')
+    return render(request, 'alumni_profile.html', {'courses': courses, 'alumni': alumni})
 
 def alumni_job_status(request):
-    return render(request, 'alumni_job_status.html')
+    alumni = get_object_or_404(Alumni, email=request.user.email)
+    jobs = AlumniJob.objects.filter(alumni=alumni)
+    return render(request, 'alumni_job_status.html', {'jobs': jobs})
 
 @login_required
 def alumni_post_job(request):
