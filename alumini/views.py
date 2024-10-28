@@ -428,3 +428,25 @@ def alumni_post_job(request):
     jobs = AlumniJob.objects.filter(alumni=alumni) if alumni else []
 
     return render(request, 'alumni_post_job.html', {'jobs': jobs})
+
+@login_required
+def admin_job_post(request):
+    job_requests = AlumniJob.objects.filter(approved=False)
+    jobs = AlumniJob.objects.filter(approved=True)
+    return render(request, 'admin_job_post.html', {'job_requests': job_requests, 
+                                                   'jobs': jobs})
+
+@login_required
+def approve_job(request, job_id):
+    # Approve a specific job request
+    job_request = get_object_or_404(AlumniJob, id=job_id)
+    job_request.approved = True  # Set approved status
+    job_request.save()  # Save changes
+    return redirect('admin_job_post')  # Redirect back to the job requests page
+
+@login_required
+def reject_job(request, job_id):
+    # Reject a specific job request
+    job_request = get_object_or_404(AlumniJob, id=job_id)
+    job_request.delete()  # Set approved status to False
+    return redirect('admin_job_post')

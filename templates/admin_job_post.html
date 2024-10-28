@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,14 +13,16 @@
     <title>Grad School HTML5 Template</title>
     
     <!-- Bootstrap core CSS -->
-    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="../static/assets/css/fontawesome.css">
-    <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
-    <link rel="stylesheet" href="../static/assets/css/owl.css">
-    <link rel="stylesheet" href="../static/assets/css/lightbox.css">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/templatemo-grad-school.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/lightbox.css' %}">
     <style>
+        .section.main-banner {
+            padding-top: 380px; /* Adjust based on header height */
+        }
         .course-heading {
             color: rgb(255, 255, 255);
         }
@@ -61,11 +64,12 @@
         table th, table td {
             text-align: center; /* Center align text */
             padding: 10px;
+            color: white;
         }
     
         table th {
-            background-color: #007bff; /* Bootstrap primary color for headers */
             color: white; /* White text for contrast */
+            background-color: #0056b3;
         }
     
         .btn-warning {
@@ -111,42 +115,78 @@ https://templatemo.com/tm-557-grad-school
       </video>
 
       <div class="video-overlay header-text">
-          <div class="caption">
-              <h2>Our Courses</h2>
-              <div class="container mt-5">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" name="title" placeholder="Course Title" required>
-                        <input type="hidden" name="course_id" id="course_id" value="">
-                        <button type="submit" name="action" value="add" class="btn btn-primary">Add Course</button>
-                    </div>
-                </form>
-
+        <div class="caption">
             <table class="table table-bordered mt-3">
+                <h2>Job Requests</h2>
                 <thead>
                     <tr>
-                        <th><h5 class="course-heading">Course</h5></th>
-                        <th><h5 class="course-heading">Actions</h5></th>
+                        <th>Alumni</th>
+                        <th>Company Name</th>
+                        <th>Role</th>
+                        <th>Date Joined</th>
+                        <th>Salary</th>
+                        <th>Image</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for course in courses %}
-                        <tr>
-                            <td class="course-heading">{{ course.title }}</td>
-                            <td>
-                                <form method="POST" action="" style="display:inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="course_id" value="{{ course.id }}">
-                                    <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
+                    {% for job_request in job_requests %}
+                    <tr>
+                        <td>{{ job_request.alumni.name }}</td>
+                        <td>{{ job_request.company_name }}</td>
+                        <td>{{ job_request.role }}</td>
+                        <td>{{ job_request.date_joined }}</td>
+                        <td>{{ job_request.salary }}</td>
+                        <td><img src="{{ job_request.image.url }}" alt="{{ job_request.company_name }}" style="max-width: 100px;"></td>
+                        <td>
+                            <a href="{% url 'approve_job' job_request.id %}" class="btn btn-success">Approve</a>
+                            <form action="{% url 'reject_job' job_request.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
-      </div>
-  </section>
+
+            <h2>All Jobs</h2>
+            {% if jobs %}
+                <table class="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th>Alumni</th>
+                            <th>Company Name</th>
+                            <th>Role</th>
+                            <th>Date Joined</th>
+                            <th>Salary</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td>{{ job.alumni.name }}</td>
+                            <td>{{ job.company_name }}</td>
+                            <td>{{ job.role }}</td>
+                            <td>{{ job.date_joined }}</td>
+                            <td>{{ job.salary }}</td>
+                            <td><img src="{{ job.image.url }}" alt="{{ job.company_name }}" style="max-width: 100px;"></td>
+                            <td>
+                                <a href="{% url 'reject_job' job.id %}" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No jobs available.</p>
+            {% endif %}
+        </div>  
+    </div>
+</section>
+
   <!-- ***** Main Banner Area End ***** -->
 
   <footer>
@@ -166,15 +206,15 @@ https://templatemo.com/tm-557-grad-school
 
   <!-- Scripts -->
   <!-- Bootstrap core JavaScript -->
-    <script src="../static/vendor/jquery/jquery.min.js"></script>
-    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/assets/js/isotope.min.js"></script>
-    <script src="../static/assets/js/owl-carousel.js"></script>
-    <script src="../static/assets/js/lightbox.js"></script>
-    <script src="../static/assets/js/tabs.js"></script>
-    <script src="../static/assets/js/video.js"></script>
-    <script src="../static/assets/js/slick-slider.js"></script>
-    <script src="../static/assets/js/custom.js"></script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/isotope.min.js' %}"></script>
+  <script src="{% static 'assets/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'assets/js/lightbox.js' %}"></script>
+  <script src="{% static 'assets/js/tabs.js' %}"></script>
+  <script src="{% static 'assets/js/video.js' %}"></script>
+  <script src="{% static 'assets/js/slick-slider.js' %}"></script>
+  <script src="{% static 'assets/js/custom.js' %}"></script>
     <script>
         //according to loftblog tut
         $('.nav li:first').addClass('active');
