@@ -359,3 +359,12 @@ def admin_events(request):
     events = Events.objects.all()
     return render(request, 'admin_events.html', {'events': events})
 
+def student_events(request):
+    events = Events.objects.all()
+    return render(request, 'student_events.html', {'events': events})
+
+def view_alumnies(request):
+    return render(request, 'view_alumnies.html')
+
+def student_profile(request):
+    return render(request, 'student_profile.html')

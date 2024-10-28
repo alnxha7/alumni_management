@@ -41,6 +41,9 @@ urlpatterns = [
 
     path('student_index/', views.student_index, name='student_index'),
     path('alumni_index/', views.alumni_index, name='alumni_index'),
+    path('stduent_events/', views.student_events, name='student_events'),
+    path('view_alumnies/', views.view_alumnies, name='view_alumnies'),
+    path('student_profile/', views.student_profile, name='student_profile'),
 
     path('admin_events/', views.admin_events, name='admin_events'),
 

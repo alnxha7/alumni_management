@@ -19,6 +19,48 @@
     <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
+    <style>
+        .section.main-banner {
+            padding-top: 180px; /* Adjust based on header height */
+        }
+         .card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            background-color: #062c54;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Slight zoom effect on hover */
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .card-text, .event-date, .event-venue {
+            font-size: 16px;
+            display: none; /* Hidden by default */
+            color: #ffffff;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .learn-more-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
 <!--
     
 TemplateMo 557 Grad School
@@ -34,7 +76,7 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#">Welcome <em>{{user.username}}</em></a>
+      <a href="#">Welcome <em>Admin</em></a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
@@ -52,18 +94,34 @@ https://templatemo.com/tm-557-grad-school
   <!-- ***** Main Banner Area Start ***** -->
   <section class="section main-banner" id="top" data-section="section1">
       <video autoplay muted loop id="bg-video">
-          <source src="../static/assets/images/course-video.mp4" type="video/mp4" />
+          <!-- <source src="../static/assets/images/course-video.mp4" type="video/mp4" /> -->
       </video>
 
       <div class="video-overlay header-text">
           <div class="caption">
-              <h6>Graduate School of Management</h6>
-              <h2><em>Your</em> Classroom</h2>
-              <div class="main-button">
-                  <div class="scroll-to-section"><a href="#section2">Discover more</a></div>
-              </div>
-          </div>
-      </div>
+            <h2>Our Events</h2>
+            <div class="container mt-5">
+                <div class="row">
+                    {% for event in events %}
+                    <div class="col-md-4">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top" src="../media/event_img.jpg" alt="{{ event.name }}">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ event.name }}</h4>
+                                
+                                <!-- Hidden details initially -->
+                                <h6 class="card-title">Date: {{ event.date }}</h6>
+                                <p class="event-venue">Venue: {{ event.venue }}</p>
+                                <p class="card-text">{{ event.description }}</p>
+                                
+                                <!-- Learn more button -->
+                                <button class="btn btn-primary learn-more-btn" onclick="toggleDetails(this)">Show More</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
   </section>
   <!-- ***** Main Banner Area End ***** -->
 
@@ -74,7 +132,7 @@ https://templatemo.com/tm-557-grad-school
           <p><i class="fa fa-copyright"></i> Copyright 2020 by Grad School  
           
            | Design: <a href="https://templatemo.com" rel="sponsored" target="_parent">TemplateMo</a><br>
-           Distributed By: <a href="https://themewagon.com" rel="sponsored" target="_blank">ThemeWagon</a>
+           Distributed By: <a href="" rel="sponsored" target="_blank">Alansha</a>
           
           </p>
         </div>
@@ -142,6 +200,22 @@ https://templatemo.com/tm-557-grad-school
         $(window).scroll(function () {
           checkSection();
         });
+
+        function toggleDetails(button) {
+            const cardBody = button.parentElement;
+            const details = cardBody.querySelectorAll('.event-date, .event-venue, .card-text');
+            
+            details.forEach(detail => {
+                // Toggle the visibility of event details
+                if (detail.style.display === "none") {
+                    detail.style.display = "block";
+                    button.textContent = "Show Less";
+                } else {
+                    detail.style.display = "none";
+                    button.textContent = "Show More";
+                }
+            });
+        }
     </script>
 </body>
 </html>

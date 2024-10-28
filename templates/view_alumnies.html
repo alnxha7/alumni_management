@@ -19,6 +19,21 @@
     <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
+
+    <style>
+        td {
+            color: rgb(255, 255, 255);
+            font-size: 1.2rem;
+        }
+        th {
+            color: white;
+        }
+        .student-image,
+        .alumni-image {
+        width: 150px; /* Set the desired width */
+        height: auto; /* Maintain aspect ratio */
+    }
+    </style>
 <!--
     
 TemplateMo 557 Grad School
@@ -34,7 +49,7 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#">Welcome <em>{{user.username}}</em></a>
+      <a href="#">Welcome <em>Admin</em></a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
@@ -52,16 +67,55 @@ https://templatemo.com/tm-557-grad-school
   <!-- ***** Main Banner Area Start ***** -->
   <section class="section main-banner" id="top" data-section="section1">
       <video autoplay muted loop id="bg-video">
-          <source src="../static/assets/images/course-video.mp4" type="video/mp4" />
+          <!-- <source src="../static/assets/images/course-video.mp4" type="video/mp4" /> -->
       </video>
 
       <div class="video-overlay header-text">
           <div class="caption">
-              <h6>Graduate School of Management</h6>
-              <h2><em>Your</em> Classroom</h2>
-              <div class="main-button">
-                  <div class="scroll-to-section"><a href="#section2">Discover more</a></div>
-              </div>
+
+            <div class="container mt-5">
+
+                <!-- Alumni Table -->
+                <h2 class="text-center">Alumni List</h2>
+                <table class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th>Year of Passout</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alum in alumni %}
+                        <tr>
+                            <td>{{ alum.passout}}</td>
+                            <td>{{ alum.name }}</td>
+                            <td>{{ alum.course }}</td>
+                            <td>{{ alum.email }}</td>
+                            <td>{{ alum.number }}</td>
+                            <td><img src="{{ alum.image.url }}" alt="Alumni Image" class="alumni-image"></td>
+                            <td>
+                                <!-- Delete Button -->
+                                <form method="POST" action="{% url 'delete_user' alum.email %}" onsubmit="return confirmDelete()">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">No alumni available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
           </div>
       </div>
   </section>
@@ -94,6 +148,11 @@ https://templatemo.com/tm-557-grad-school
     <script src="../static/assets/js/slick-slider.js"></script>
     <script src="../static/assets/js/custom.js"></script>
     <script>
+
+function confirmDelete() {
+        return confirm('Are you sure you want to delete this user?');
+    }
+
         //according to loftblog tut
         $('.nav li:first').addClass('active');
 
@@ -142,6 +201,7 @@ https://templatemo.com/tm-557-grad-school
         $(window).scroll(function () {
           checkSection();
         });
+        
     </script>
 </body>
 </html>
