@@ -40,3 +40,15 @@ class Events(models.Model):
 
     def __str__(self):
         return self.name
+    
+class AlumniJob(models.Model):
+    alumni = models.ForeignKey(Alumni, on_delete=models.CASCADE, related_name="jobs")  
+    company_name = models.CharField(max_length=255)
+    role = models.CharField(max_length=100)
+    date_joined = models.DateField()
+    salary = models.DecimalField(max_digits=10, decimal_places=2) 
+    image = models.ImageField(upload_to='alumni_job_images/') 
+    approved = models.BooleanField(default=False)  
+
+    def __str__(self):
+        return f"{self.company_name} - {self.role} ({self.alumni.name})"

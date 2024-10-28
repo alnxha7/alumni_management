@@ -45,6 +45,11 @@ urlpatterns = [
     path('view_alumnies/', views.view_alumnies, name='view_alumnies'),
     path('student_profile/', views.student_profile, name='student_profile'),
 
+    path('alumni_events/', views.alumni_events, name='alumni_events'),
+    path('alumni_profile/', views.alumni_profile, name='alumni_profile'),
+    path('alumni_job_status/', views.alumni_job_status, name='alumni_job_status'),
+    path('alumni_post_job/', views.alumni_post_job, name='alumni_post_job'),
+
     path('admin_events/', views.admin_events, name='admin_events'),
 
 ]

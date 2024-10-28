@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from .models import Course, Alumni, Student, Events
+from .models import Course, Alumni, Student, Events, AlumniJob
 import datetime
 
 def home(request):
@@ -368,3 +370,61 @@ def view_alumnies(request):
 
 def student_profile(request):
     return render(request, 'student_profile.html')
+
+def alumni_events(request):
+    events = Events.objects.all()
+    return render(request, 'alumni_events.html', {'events': events})
+
+def alumni_profile(request):
+    return render(request, 'alumni_profile.html')
+
+def alumni_job_status(request):
+    return render(request, 'alumni_job_status.html')
+
+@login_required
+def alumni_post_job(request):
+    # Fetch the current logged-in user
+    current_user = request.user
+
+    # Fetch alumni instance for the current user
+    try:
+        alumni = Alumni.objects.get(email=current_user.email)  # Assuming email links user to alumni
+    except Alumni.DoesNotExist:
+        alumni = None
+
+    if request.method == 'POST':
+        if alumni is not None:  # Ensure alumni instance is valid
+            action = request.POST.get('action')
+
+            if action == 'add':
+                company_name = request.POST.get('company_name')
+                role = request.POST.get('role')
+                date_joined = request.POST.get('date_joined')
+                salary = request.POST.get('salary')
+                # Assuming you have an image upload
+                image = request.FILES.get('image')  # Accessing the uploaded image
+
+                # Create a new job posting
+                new_job = AlumniJob(
+                    alumni=alumni,  # Use the alumni instance
+                    company_name=company_name,
+                    role=role,
+                    date_joined=date_joined,
+                    salary=salary,
+                    image=image  # Ensure image is included
+                )
+                new_job.save()  # Save the new job instance
+                return redirect('alumni_post_job')  # Redirect after posting
+
+            elif action == 'delete':
+                job_id = request.POST.get('job_id')
+                try:
+                    job_to_delete = AlumniJob.objects.get(id=job_id, alumni=alumni)
+                    job_to_delete.delete()  # Delete the job if found
+                except AlumniJob.DoesNotExist:
+                    pass  # Handle if job does not exist
+
+    # Fetch all jobs posted by the current alumni
+    jobs = AlumniJob.objects.filter(alumni=alumni) if alumni else []
+
+    return render(request, 'alumni_post_job.html', {'jobs': jobs})

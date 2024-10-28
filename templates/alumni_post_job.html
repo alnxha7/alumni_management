@@ -19,6 +19,55 @@
     <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
+    <style>
+        .input-group input[type="text"],
+.input-group input[type="date"],
+.input-group input[type="file"] {
+    width: calc(20% - 20px); /* Adjusting width for input fields */
+    padding: 10px;
+    border: 1px solid #ced4da; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus */
+}
+
+.input-group input[type="text"]:focus,
+.input-group input[type="date"]:focus,
+.input-group input[type="file"]:focus {
+    border-color: #007bff; /* Bootstrap primary color on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Adding shadow on focus */
+}
+
+.input-group button {
+    padding: 10px 20px; /* Padding for buttons */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition for hover */
+}
+
+/* Table Styles */
+.table {
+    width: 100%; /* Full width */
+    margin-top: 20px; /* Space above table */
+    border-collapse: collapse; /* Remove spacing between borders */
+}
+
+.table th,
+.table td {
+    padding: 15px; /* Cell padding */
+    text-align: left; /* Align text to the left */
+    border: 1px solid #dee2e6; /* Border color for table cells */
+    color: #fff;
+}
+
+.table th {
+    color: white; /* White text color for headers */
+    font-weight: bold; /* Bold text for headers */
+}
+
+.table img {
+    max-width: 100px; /* Limiting image size */
+    border-radius: 5px; /* Rounded corners for images */
+}
+    </style>
 <!--
     
 TemplateMo 557 Grad School
@@ -52,20 +101,60 @@ https://templatemo.com/tm-557-grad-school
 
   <!-- ***** Main Banner Area Start ***** -->
   <section class="section main-banner" id="top" data-section="section1">
-      <video autoplay muted loop id="bg-video">
-          <source src="../static/assets/images/course-video.mp4" type="video/mp4" />
-      </video>
+    <video autoplay muted loop id="bg-video">
+        <!-- <source src="../static/assets/images/course-video.mp4" type="video/mp4" /> -->
+    </video>
 
-      <div class="video-overlay header-text">
-          <div class="caption">
-              <h6>Graduate School of Management</h6>
-              <h2><em>Your</em> Classroom</h2>
-              <div class="main-button">
-                  <div class="scroll-to-section"><a href="#section2">Discover more</a></div>
-              </div>
-          </div>
-      </div>
-  </section>
+    <div class="video-overlay header-text">
+        <div class="caption">
+            <h2>Job Posts</h2>
+            <div class="container mt-5">
+                <form method="POST" action="{% url 'alumni_post_job' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="company_name" placeholder="Company Name" required>
+                        <input type="text" name="role" placeholder="Job Role" required>
+                        <input type="date" name="date_joined" placeholder="Date Joined" required>
+                        <input type="text" name="salary" placeholder="Salary" required>
+                        <input type="file" name="image" required>
+                        <button type="submit" name="action" value="add" class="btn btn-primary">Add Job</button>
+                    </div>
+                </form>
+
+                <table class="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th><h5 class="course-heading">Company Name</h5></th>
+                            <th><h5 class="course-heading">Job Role</h5></th>
+                            <th><h5 class="course-heading">Date Joined</h5></th>
+                            <th><h5 class="course-heading">Salary</h5></th>
+                            <th><h5 class="course-heading">Image</h5></th>
+                            <th><h5 class="course-heading">Actions</h5></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                            <tr>
+                                <td>{{ job.company_name }}</td>
+                                <td>{{ job.role }}</td>
+                                <td>{{ job.date_joined }}</td>
+                                <td>{{ job.salary }}</td>
+                                <td><img src="{{ job.image.url }}" alt="{{ job.company_name }}" style="max-width: 100px;"></td>
+                                <td>
+                                    <form method="POST" action="{% url 'alumni_post_job' %}" style="display:inline;" onsubmit="return confirmDelete();">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="job_id" value="{{ job.id }}">
+                                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
   <!-- ***** Main Banner Area End ***** -->
 
   <footer>
@@ -143,6 +232,10 @@ https://templatemo.com/tm-557-grad-school
         $(window).scroll(function () {
           checkSection();
         });
+
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this job?");
+    }
     </script>
 </body>
 </html>
