@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .models import Course, Alumni, Student, Events, AlumniJob
@@ -366,10 +366,31 @@ def student_events(request):
     return render(request, 'student_events.html', {'events': events})
 
 def view_alumnies(request):
-    return render(request, 'view_alumnies.html')
+    # Fetch all approved alumni
+    alumnies = Alumni.objects.filter(is_approved=True)
+    context = {
+        'alumnies': alumnies,
+    }
+    
+    return render(request, 'view_alumnies.html', context)
 
 def student_profile(request):
-    return render(request, 'student_profile.html')
+    student = get_object_or_404(Student, email=request.user.email)  # assuming email is unique
+    courses = Course.objects.all()
+
+    if request.method == 'POST':
+        student.name = request.POST.get('name')
+        student.course_id = request.POST.get('course')
+        student.passout = request.POST.get('passout')
+        student.number = request.POST.get('number')
+
+        if 'image' in request.FILES:
+            student.image = request.FILES['image']
+
+        student.is_approved=False
+        student.save()
+        return redirect('student_profile')
+    return render(request, 'student_profile.html', {'courses': courses, 'student': student})
 
 def alumni_events(request):
     events = Events.objects.all()
@@ -467,3 +488,14 @@ def reject_job(request, job_id):
     job_request = get_object_or_404(AlumniJob, id=job_id)
     job_request.delete()  # Set approved status to False
     return redirect('admin_job_post')
+
+@login_required
+def job_status(request, alumni_id):
+    alumni = get_object_or_404(Alumni, id=alumni_id)
+    alumni_jobs = AlumniJob.objects.filter(alumni=alumni, approved=True)  # Fetch only approved jobs
+
+    context = {
+        'alumni': alumni,
+        'alumni_jobs': alumni_jobs
+    }
+    return render(request, 'job_status.html', context)

@@ -53,11 +53,7 @@ https://templatemo.com/tm-557-grad-school
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
-        <li><a class='external' href="{% url 'student_index' %}">Home</a></li>
-        <li><a class='external' href="{% url 'student_events' %}">Events</a></li>
         <li><a class='external' href="{% url 'view_alumnies' %}">Alumnies</a></li>
-        <li><a class='external' href="{% url 'student_profile' %}">My Profile</a></li>
-        <li><a class="external" href="{% url 'logout' %}">Logout</a></li>
         <!-- <li><a href="#section5">Video</a></li> -->
       </ul>
     </nav>
@@ -71,36 +67,31 @@ https://templatemo.com/tm-557-grad-school
 
       <div class="video-overlay header-text">
         <div class="caption">
-          <div class="container mt-5">
-            <h2 class="text-center">Alumni List</h2>
-            <table class="table table-striped table-dark">
-              <thead>
-                  <tr>
-                      <th>Year of Passout</th>
-                      <th>Name</th>
-                      <th>Course</th>
-                      <th>Email</th>
-                      <th>Phone Number</th>
-                      <th>Image</th>
-                      <th>Job Status</th>
-                  </tr>
-              </thead>
-              <tbody>
-                {% for alum in alumnies %}
-                <tr>
-                    <td>{{ alum.passout }}</td>
-                    <td>{{ alum.name }}</td>
-                    <td>{{ alum.course.title }}</td>
-                    <td>{{ alum.email }}</td>
-                    <td>{{ alum.number }}</td>
-                    <td><img src="{{ alum.image.url }}" alt="Alumni Image" class="alumni-image"></td>
-                    <td>
-                      <a href="{% url 'job_status' alumni_id=alum.id %}" class="btn btn-primary">Job Status</a>
-                  </td>
-                    {% endfor %}
-            </tbody>
-          </table>
-      </div>
+            <div class="container mt-5">
+                <h2>{{ alumni.name }}'s Job Status</h2>
+                <table class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Role</th>
+                            <th>Date Joined</th>
+                            <th>Salary</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in alumni_jobs %}
+                        <tr>
+                            <td>{{ job.company_name }}</td>
+                            <td>{{ job.role }}</td>
+                            <td>{{ job.date_joined }}</td>
+                            <td>{{ job.salary }}</td>
+                            <td><img src="{{ job.image.url }}" alt="Job Image" style="width: 150px;"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>        
       </div>
   </section>
   <!-- ***** Main Banner Area End ***** -->

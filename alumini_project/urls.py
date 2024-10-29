@@ -53,8 +53,8 @@ urlpatterns = [
     path('admin_events/', views.admin_events, name='admin_events'),
     path('admin_job_post/', views.admin_job_post, name='admin_job_post'),
     path('admin/job-requests/approve/<int:job_id>/', views.approve_job, name='approve_job'),
-    path('reject_job/<int:job_id>/', views.reject_job, name='reject_job')
-
+    path('reject_job/<int:job_id>/', views.reject_job, name='reject_job'),
+    path('alumni/<int:alumni_id>/job_status/', views.job_status, name='job_status'),
 ]
 
 if settings.DEBUG:
