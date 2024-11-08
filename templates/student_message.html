@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,21 +13,25 @@
     <title>Alumni</title>
     
     <!-- Bootstrap core CSS -->
-    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/templatemo-grad-school.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/lightbox.css' %}">
 
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="../static/assets/css/fontawesome.css">
-    <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
-    <link rel="stylesheet" href="../static/assets/css/owl.css">
-    <link rel="stylesheet" href="../static/assets/css/lightbox.css">
     <style>
-      table td {
-        color: white;
-      }
-      table th {
-        color: white;
-        background-color: #007bff;
-      }
+        td {
+            color: rgb(255, 255, 255);
+            font-size: 1.2rem;
+        }
+        th {
+            color: white;
+        }
+        .student-image,
+        .alumni-image {
+        width: 150px; /* Set the desired width */
+        height: auto; /* Maintain aspect ratio */
+    }
     </style>
 <!--
     
@@ -43,16 +48,15 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#">Welcome <em>{{user.username}}</em></a>
+      <a href="#">Welcome <em>{{request.user.username}}</em></a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
-        <li><a class='external' href="{% url 'alumni_index' %}">Home</a></li>
-        <li><a class='external' href="{% url 'alumni_events' %}">Events</a></li>
-        <li><a class='external' href="{% url 'alumni_post_job' %}">Post Job</a></li>
-        <li><a class='external' href="{% url 'alumni_job_status' %}">Job Status</a></li>
-        <li><a class='external' href="{% url 'alumni_profile' %}">My Profile</a></li>
+        <li><a class='external' href="{% url 'student_index' %}">Home</a></li>
+        <li><a class='external' href="{% url 'student_events' %}">Events</a></li>
+        <li><a class='external' href="{% url 'view_alumnies' %}">Alumnies</a></li>
+        <li><a class='external' href="{% url 'student_profile' %}">My Profile</a></li>
         <li><a class="external" href="{% url 'logout' %}">Logout</a></li>
         <!-- <li><a href="#section5">Video</a></li> -->
       </ul>
@@ -66,41 +70,9 @@ https://templatemo.com/tm-557-grad-school
       </video>
 
       <div class="video-overlay header-text">
-          <div class="caption">
-              <h2>Job Status</h2>
-              <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Company Name</th>
-                        <th>Role</th>
-                        <th>Date Joined</th>
-                        <th>Salary</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td>{{ job.company_name }}</td>
-                        <td>{{ job.role }}</td>
-                        <td>{{ job.date_joined }}</td>
-                        <td>{{ job.salary }}</td>
-                        <td>
-                            {% if job.approved %}
-                                <span class="text-success">Approved</span>
-                            {% else %}
-                                <span class="text-warning">Pending</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center">No job postings available</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-          </div>
+        <div class="caption">
+          <h2>Messages</h2>
+      </div>
       </div>
   </section>
   <!-- ***** Main Banner Area End ***** -->
@@ -118,16 +90,15 @@ https://templatemo.com/tm-557-grad-school
 
   <!-- Scripts -->
   <!-- Bootstrap core JavaScript -->
-    <script src="../static/vendor/jquery/jquery.min.js"></script>
-    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/assets/js/isotope.min.js"></script>
-    <script src="../static/assets/js/owl-carousel.js"></script>
-    <script src="../static/assets/js/lightbox.js"></script>
-    <script src="../static/assets/js/tabs.js"></script>
-    <script src="../static/assets/js/video.js"></script>
-    <script src="../static/assets/js/slick-slider.js"></script>
-    <script src="../static/assets/js/custom.js"></script>
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/js/isotope.min.js' %}"></script>
+  <script src="{% static 'assets/js/owl-carousel.js' %}"></script>
+  <script src="{% static 'assets/js/lightbox.js' %}"></script>
+  <script src="{% static 'assets/js/tabs.js' %}"></script>
+  <script src="{% static 'assets/js/video.js' %}"></script>
+  <script src="{% static 'assets/js/slick-slider.js' %}"></script>
     <script>
+
         //according to loftblog tut
         $('.nav li:first').addClass('active');
 
@@ -176,6 +147,7 @@ https://templatemo.com/tm-557-grad-school
         $(window).scroll(function () {
           checkSection();
         });
+  </script>
     </script>
 </body>
 </html>

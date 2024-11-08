@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-    <title>Grad School HTML5 Template</title>
+    <title>Alumni</title>
     
     <!-- Bootstrap core CSS -->
     <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -83,6 +83,7 @@ https://templatemo.com/tm-557-grad-school
                       <th>Phone Number</th>
                       <th>Image</th>
                       <th>Job Status</th>
+                      <th>Message</th>
                   </tr>
               </thead>
               <tbody>
@@ -95,8 +96,11 @@ https://templatemo.com/tm-557-grad-school
                     <td>{{ alum.number }}</td>
                     <td><img src="{{ alum.image.url }}" alt="Alumni Image" class="alumni-image"></td>
                     <td>
-                      <a href="{% url 'job_status' alumni_id=alum.id %}" class="btn btn-primary">Job Status</a>
-                  </td>
+                      <a href="{% url 'job_status' alumni_id=alum.id %}" class="btn btn-primary">Job__Status</a>
+                    </td>
+                    <td>
+                      <a href="{% url 'student_message' %}" class="btn btn-warning">Message</a>
+                    </td>
                     {% endfor %}
             </tbody>
           </table>
@@ -109,11 +113,7 @@ https://templatemo.com/tm-557-grad-school
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <p><i class="fa fa-copyright"></i> Copyright 2020 by Grad School  
-          
-           | Design: <a href="https://templatemo.com" rel="sponsored" target="_parent">TemplateMo</a><br>
-           Distributed By: <a href="https://themewagon.com" rel="sponsored" target="_blank">ThemeWagon</a>
-          
+          <p><i class="fa fa-copyright"></i> Copyright 2024
           </p>
         </div>
       </div>

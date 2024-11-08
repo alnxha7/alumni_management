@@ -57,15 +57,15 @@ def login_view(request):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            print("User with this email does not exist.")
-            return render(request, 'login.html')
+            # Pass an error message if the email does not exist
+            return render(request, 'login.html', {'error': "User with this email does not exist."})
 
         # Check if the password matches
         if user.check_password(password):
             # Log the user in
             login(request, user)
 
-            # Check if the user is a superuser first
+            # Check if the user is a superuser
             if user.is_superuser:
                 return redirect('admin_dashboard')
 
@@ -73,29 +73,28 @@ def login_view(request):
             try:
                 student = Student.objects.get(email=user.email)
                 if not student.is_approved:
-                    print("Your student account is not approved yet. Please contact the administrator.")
-                    return render(request, 'login.html')
-                request.session['user_type'] = 'student'
+                    # Display an error message if the student account is not approved
+                    return render(request, 'login.html', {'error': "Your student account is not approved yet. Please contact the administrator."})
                 return redirect('student_index')
             except Student.DoesNotExist:
                 # Check if the user is an alumni
                 try:
                     alumni = Alumni.objects.get(email=user.email)
                     if not alumni.is_approved:
-                        print("Your alumni account is not approved yet. Please contact the administrator.")
-                        return render(request, 'login.html')
-                    request.session['user_type'] = 'alumni'
+                        # Display an error message if the alumni account is not approved
+                        return render(request, 'login.html', {'error': "Your alumni account is not approved yet. Please contact the administrator."})
                     return redirect('alumni_index')
                 except Alumni.DoesNotExist:
-                    print("Your account does not belong to a student or alumni.")
-                    return render(request, 'login.html')
+                    # Display an error message if the user is not a student or alumni
+                    return render(request, 'login.html', {'error': "Your account does not belong to a student or alumni."})
         else:
-            print("Invalid email or password.")
-            return render(request, 'login.html')
+            # Display an error message if the password is incorrect
+            return render(request, 'login.html', {'error': "Invalid email or password."})
 
     return render(request, 'login.html')
 
 def register_student(request):
+    error = None
     if request.method == 'POST':
         # Get form data
         adnum = request.POST.get('adnum')
@@ -108,41 +107,39 @@ def register_student(request):
         
         # Check if email is already registered
         if Student.objects.filter(email=email).exists():
-            messages.error(request, "Email is already registered.")
-            return redirect('register_student')
-        
-        if len(number) != 10:
-            print("Phone number must be exactly 10 digits.")
-            return redirect('register_alumini')
-        
-        try:
-            course = Course.objects.get(id=course_id)
-        except Course.DoesNotExist:
-            print("Selected course does not exist.")
-            return redirect('register_alumini')
-        
-        User = get_user_model()
-        user = User.objects.create_user(username=name, email=email, password=password)
+            error = "Email is already registered."
+        elif len(number) != 10:
+            error = "Phone number must be exactly 10 digits."
+        else:
+            try:
+                course = Course.objects.get(id=course_id)
+            except Course.DoesNotExist:
+                error = "Selected course does not exist."
+            else:
+                User = get_user_model()
+                user = User.objects.create_user(username=name, email=email, password=password)
 
-        # Create a new Student instance and save it
-        student = Student(
-            adnum=adnum,
-            course=course,
-            name=name,
-            number=number,
-            email=email,
-            password=password,  # Again, consider hashing
-            image=image
-        )
-        student.save()
+                # Create a new Student instance and save it
+                student = Student(
+                    adnum=adnum,
+                    course=course,
+                    name=name,
+                    number=number,
+                    email=email,
+                    password=password,  # Again, consider hashing
+                    image=image
+                )
+                student.save()
 
-        return redirect('login')  # Redirect to login or another page
+                return redirect('login')  # Redirect to login or another page
     
     courses = Course.objects.all()
 
-    return render(request, 'register_student.html', {'courses': courses})
+    return render(request, 'register_student.html', {'courses': courses, 'error': error})
 
 def register_alumini(request):
+    error_message = None  # Initialize error message variable
+
     if request.method == 'POST':
         name = request.POST.get('name')
         course_id = request.POST.get('course')  # Get the selected course ID
@@ -154,26 +151,26 @@ def register_alumini(request):
 
         # Validate phone number length
         if len(number) != 10:
-            print("Phone number must be exactly 10 digits.")
-            return redirect('register_alumini')
+            error_message = "Phone number must be exactly 10 digits."
+            return render(request, 'register_alumini.html', {'error': error_message, 'courses': Course.objects.all(), 'current_year': datetime.datetime.now().year})
 
         # Validate year of passout
         current_year = datetime.datetime.now().year
         if int(passout) < current_year - 50 or int(passout) > current_year:
-            print("Year of passout must be between the last 50 years and the current year.")
-            return redirect('register_alumini')
+            error_message = "Year of passout must be between the last 50 years and the current year."
+            return render(request, 'register_alumini.html', {'error': error_message, 'courses': Course.objects.all(), 'current_year': current_year})
 
         # Ensure course ID is valid
         try:
             course = Course.objects.get(id=course_id)
         except Course.DoesNotExist:
-            print("Selected course does not exist.")
-            return redirect('register_alumini')
+            error_message = "Selected course does not exist."
+            return render(request, 'register_alumini.html', {'error': error_message, 'courses': Course.objects.all(), 'current_year': current_year})
 
         # Check if email is already registered
         if Alumni.objects.filter(email=email).exists():
-            print("Email already registered.")
-            return redirect('register_alumini')
+            error_message = "Email already registered."
+            return render(request, 'register_alumini.html', {'error': error_message, 'courses': Course.objects.all(), 'current_year': current_year})
         
         User = get_user_model()
         user = User.objects.create_user(username=name, email=email, password=password)
@@ -499,3 +496,11 @@ def job_status(request, alumni_id):
         'alumni_jobs': alumni_jobs
     }
     return render(request, 'job_status.html', context)
+
+@login_required
+def alumni_message(request):
+    return render(request, 'alumni_message.html')
+
+@login_required
+def student_message(request):   
+    return render(request, 'student_message.html')

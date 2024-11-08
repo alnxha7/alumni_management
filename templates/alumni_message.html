@@ -19,85 +19,13 @@
     <link rel="stylesheet" href="../static/assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
-
     <style>
-      /* Centering the registration form */
-      .registration-form {
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 40px;
-        border-radius: 10px;
-        background-color: rgba(22,34,57,0.99);
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+      table td {
+        color: white;
       }
-    
-      /* Form heading */
-      .registration-form h2 {
-        font-size: 28px;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 20px;
-      }
-    
-      /* Input fields styling */
-      .registration-form .form-group {
-        margin-bottom: 20px;
-      }
-    
-      .registration-form label {
-        font-size: 14px;
-        font-weight: 500;
-        color: #fff;
-        text-transform: uppercase;
-      }
-    
-      .registration-form .form-control {
-        height: 50px;
-        padding: 10px 15px;
-        font-size: 14px;
-        border: none;
-        border-radius: 25px;
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-        transition: background-color 0.3s ease;
-      }
-    
-      .registration-form .form-control:focus {
-        background: rgba(255, 255, 255, 0.2);
-        outline: none;
-        box-shadow: none;
-        color: #fff;
-      }
-    
-      /* Login button styling */
-      .main-button {
-        width: 100%;
-        height: 50px;
-        border-radius: 25px;
-        background-color: #f8b600;
-        color: #fff;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 14px;
-        transition: background-color 0.3s ease;
-        border: none;
-        cursor: pointer;
-      }
-    
-      .main-button:hover {
-        background-color: #f99d1b;
-      }
-    
-    
-      /* Responsiveness for mobile devices */
-      @media (max-width: 768px) {
-        .registration-form {
-          padding: 30px;
-        }
-    
-        .registration-form h2 {
-          font-size: 24px;
-        }
+      table th {
+        color: white;
+        background-color: #007bff;
       }
     </style>
 <!--
@@ -115,12 +43,17 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#">Forgot<em> Password</em></a>
+      <a href="#">Welcome <em>{{user.username}}</em></a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
-        <li><a class='external' href="/">Home</a></li>
+        <li><a class='external' href="{% url 'alumni_index' %}">Home</a></li>
+        <li><a class='external' href="{% url 'alumni_events' %}">Events</a></li>
+        <li><a class='external' href="{% url 'alumni_post_job' %}">Post Job</a></li>
+        <li><a class='external' href="{% url 'alumni_job_status' %}">Job Status</a></li>
+        <li><a class='external' href="{% url 'alumni_profile' %}">My Profile</a></li>
+        <li><a class="external" href="{% url 'logout' %}">Logout</a></li>
         <!-- <li><a href="#section5">Video</a></li> -->
       </ul>
     </nav>
@@ -134,25 +67,8 @@ https://templatemo.com/tm-557-grad-school
 
       <div class="video-overlay header-text">
           <div class="caption">
+              <h2>Messages</h2>
               
-            <div class="registration-form">
-            <form method="POST">
-                {% csrf_token %}
-                <label for="email">Email:</label>
-                <input class="form-control" type="email" name="email" required><br><br>
-                
-                <label for="phone_number">Phone Number:</label>
-                <input class="form-control" type="text" name="phone_number" required><br><br>
-        
-                {% if error %}
-                    <p style="color: red">{{ error }}</p>
-                {% endif %}
-        
-                <button class="main-button" type="submit">Submit</button>
-            </form>
-            <p><a href="{% url 'login' %}">Back to login</a></p>
-            </div>
-
           </div>
       </div>
   </section>

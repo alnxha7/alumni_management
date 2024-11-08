@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-    <title>Grad School HTML5 Template</title>
+    <title>Alumni</title>
     
     <!-- Bootstrap core CSS -->
     <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +21,16 @@
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
     
     <style>
-        /* Centering the registration form */
+      .error {
+        color: #fff;
+        background-color: #e74c3c;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+    }
         .registration-form {
           max-width: 400px;
           margin: 0 auto;
@@ -115,22 +124,12 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#"><em>Grad</em> School</a>
+      <a href="#"><em>Alumni</em> Management</a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
         <li><a class='external' href="/">Home</a></li>
-        <li class="has-submenu"><a href="#section2">About Us</a>
-          <ul class="sub-menu">
-            <li><a href="#section2">Who we are?</a></li>
-            <li><a href="#section3">What we do?</a></li>
-            <li><a href="#section3">How it works?</a></li>
-          </ul>
-        </li>
-        <li><a href="#section4">Courses</a></li>
-        <!-- <li><a href="#section5">Video</a></li> -->
-        <li><a href="#section6">Contact</a></li>
         <li class="has-submenu"><a href="#">Register</a>
         <ul class="sub-menu">
           <li><a class="external" href="{% url 'register_student' %}">As Student</a></li>
@@ -151,6 +150,9 @@ https://templatemo.com/tm-557-grad-school
       <div class="video-overlay header-text">
           <div class="caption">
             <div class="registration-form">
+              {% if error %}
+                <p class="error">{{ error }}</p>
+              {% endif %}
                 <h2 class="text-center">Login</h2>
                 <form action="{% url 'login' %}" method="post">
                   {% csrf_token %}
@@ -175,11 +177,7 @@ https://templatemo.com/tm-557-grad-school
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <p><i class="fa fa-copyright"></i> Copyright 2020 by Grad School  
-          
-           | Design: <a href="https://templatemo.com" rel="sponsored" target="_parent">TemplateMo</a><br>
-           Distributed By: <a href="https://themewagon.com" rel="sponsored" target="_blank">ThemeWagon</a>
-          
+          <p><i class="fa fa-copyright"></i> Copyright 2024
           </p>
         </div>
       </div>
@@ -197,6 +195,16 @@ https://templatemo.com/tm-557-grad-school
     <script src="../static/assets/js/video.js"></script>
     <script src="../static/assets/js/slick-slider.js"></script>
     <script src="../static/assets/js/custom.js"></script>
+    <script>
+      // Hide the error message after 3 seconds
+      setTimeout(function() {
+          const errorElement = document.querySelector('.error');
+          if (errorElement) {
+              errorElement.style.opacity = '0'; // Fade out
+              setTimeout(() => errorElement.style.display = 'none', 500); // Remove after fading
+          }
+      }, 3000);
+  </script>
     <script>
         //according to loftblog tut
         $('.nav li:first').addClass('active');

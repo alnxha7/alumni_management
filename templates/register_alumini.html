@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-    <title>Grad School HTML5 Template</title>
+    <title>Alumni</title>
     
     <!-- Bootstrap core CSS -->
     <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -22,8 +22,18 @@
     
     <style>
         /* Centering the registration form */
+        .error {
+        color: #fff;
+        background-color: #e74c3c;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+    }
         .registration-form {
-          max-width: 400px;
+          max-width: 800px;
           margin: 0 auto;
           padding: 40px;
           border-radius: 10px;
@@ -116,22 +126,12 @@ https://templatemo.com/tm-557-grad-school
   <!--header-->
   <header class="main-header clearfix" role="header">
     <div class="logo">
-      <a href="#"><em>Grad</em> School</a>
+      <a href="#"><em>Alumni</em> Management</a>
     </div>
     <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
     <nav id="menu" class="main-nav" role="navigation">
       <ul class="main-menu">
         <li><a class='external' href="/">Home</a></li>
-        <li class="has-submenu"><a href="#section2">About Us</a>
-          <ul class="sub-menu">
-            <li><a href="#section2">Who we are?</a></li>
-            <li><a href="#section3">What we do?</a></li>
-            <li><a href="#section3">How it works?</a></li>
-          </ul>
-        </li>
-        <li><a href="#section4">Courses</a></li>
-        <!-- <li><a href="#section5">Video</a></li> -->
-        <li><a href="#section6">Contact</a></li>
         <li class="has-submenu"><a href="#">Register</a>
         <ul class="sub-menu">
           <li><a class="external" href="{% url 'register_student' %}">As Student</a></li>
@@ -152,45 +152,61 @@ https://templatemo.com/tm-557-grad-school
       <div class="video-overlay header-text">
           <div class="caption">
             <div class="registration-form">
-                <h2 class="text-center">Register</h2>
-                <form action="{% url 'register_alumini' %}" method="post" enctype="multipart/form-data">
+              {% if error %}
+                <p class="error">{{ error }}</p>
+              {% endif %}
+              <h2 class="text-center">Register</h2>
+              <form action="{% url 'register_alumini' %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-                  <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                  <div class="row">
+                      <!-- Left column -->
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <label for="name">Name</label>
+                              <input type="text" class="form-control" id="name" name="name" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="course">Course</label>
+                              <select class="form-control" id="course" name="course" required style="background-color: rgba(22,34,57,0.99);;">
+                                  <option value="" disabled selected>Select a course</option>
+                                  {% for course in courses %}
+                                      <option value="{{ course.id }}">{{ course.title }}</option>
+                                  {% endfor %}
+                              </select>
+                          </div>
+                          <div class="form-group">
+                              <label for="passout">Year of Passout</label>
+                              <input type="number" class="form-control" id="passout" name="passout" min="1960" max="{{ current_year }}" required>
+                          </div>
+                      </div>
+          
+                      <!-- Right column -->
+                      <div class="col-md-6">
+                          <div class="form-group">
+                              <label for="number">Phone Number</label>
+                              <input type="text" class="form-control" id="number" name="number" required pattern="\d{10}" title="Please enter a valid 10-digit phone number">
+                          </div>
+                          <div class="form-group">
+                              <label for="email">Email</label>
+                              <input type="email" class="form-control" id="email" name="email" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="password">Password</label>
+                              <input type="password" class="form-control" id="password" name="password" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="image">Image</label>
+                              <input type="file" id="image" name="image" accept="image/*" required style="color: #fff;">
+                          </div>
+                      </div>
                   </div>
-                  <div class="form-group">
-                    <label for="course">Course</label>
-                    <select class="form-control" id="course" name="course" required style="background-color: rgba(255, 255, 255, 0.1); color: #fff;">
-                        <option value="" disabled selected>Select a course</option>
-                        {% for course in courses %}
-                            <option style="background-color: rgba(22,34,57,0.99); color: #fff;" value="{{ course.id }}">{{ course.title }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                  <div class="form-group">
-                    <label for="passout">Year of Passout</label>
-                    <input type="number" class="form-control" id="passout" name="passout" min="1960" max="{{ current_year }}" required>
+          
+                  <!-- Centered submit button -->
+                  <div class="text-center mt-4">
+                      <button type="submit" class="main-button">Register</button>
                   </div>
-                  <div class="form-group">
-                    <label for="number">Phone Number</label>
-                    <input type="text" class="form-control" id="number" name="number" required pattern="\d{10}" title="Please enter a valid 10-digit phone number">
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" required style="color: #fff;"><br>
-                  </div>
-                  <button type="submit" class="main-button">Register</button>
-                </form>
-              </div>
+              </form>
+          </div>
           </div>
       </div>
   </section>
@@ -200,11 +216,7 @@ https://templatemo.com/tm-557-grad-school
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <p><i class="fa fa-copyright"></i> Copyright 2020 by Grad School  
-          
-           | Design: <a href="https://templatemo.com" rel="sponsored" target="_parent">TemplateMo</a><br>
-           Distributed By: <a href="https://themewagon.com" rel="sponsored" target="_blank">ThemeWagon</a>
-          
+          <p><i class="fa fa-copyright"></i> Copyright 2024
           </p>
         </div>
       </div>
@@ -222,6 +234,16 @@ https://templatemo.com/tm-557-grad-school
     <script src="../static/assets/js/video.js"></script>
     <script src="../static/assets/js/slick-slider.js"></script>
     <script src="../static/assets/js/custom.js"></script>
+    <script>
+      // Hide the error message after 3 seconds
+      setTimeout(function() {
+          const errorElement = document.querySelector('.error');
+          if (errorElement) {
+              errorElement.style.opacity = '0'; // Fade out
+              setTimeout(() => errorElement.style.display = 'none', 500); // Remove after fading
+          }
+      }, 3000);
+  </script>
     <script>
         //according to loftblog tut
         $('.nav li:first').addClass('active');

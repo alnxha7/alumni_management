@@ -55,6 +55,9 @@ urlpatterns = [
     path('admin/job-requests/approve/<int:job_id>/', views.approve_job, name='approve_job'),
     path('reject_job/<int:job_id>/', views.reject_job, name='reject_job'),
     path('alumni/<int:alumni_id>/job_status/', views.job_status, name='job_status'),
+
+    path('alumni_message/', views.alumni_message, name='alumni_message'),
+    path('student_message//', views.student_message, name='student_message'),
 ]
 
 if settings.DEBUG:
