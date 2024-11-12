@@ -6,8 +6,9 @@ from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from .models import Course, Alumni, Student, Events, AlumniJob
+from .models import Course, Alumni, Student, Events, AlumniJob, Chat
 import datetime
+from django.db.models import Q
 
 def home(request):
     return render(request, 'index.html')
@@ -386,7 +387,7 @@ def student_profile(request):
 
         student.is_approved=False
         student.save()
-        return redirect('student_profile')
+        return redirect('home')
     return render(request, 'student_profile.html', {'courses': courses, 'student': student})
 
 def alumni_events(request):
@@ -408,7 +409,7 @@ def alumni_profile(request):
 
         alumni.is_approved=False
         alumni.save()
-        return redirect('alumni_profile')
+        return redirect('home')
     return render(request, 'alumni_profile.html', {'courses': courses, 'alumni': alumni})
 
 def alumni_job_status(request):
@@ -499,8 +500,44 @@ def job_status(request, alumni_id):
 
 @login_required
 def alumni_message(request):
-    return render(request, 'alumni_message.html')
+    students = Student.objects.all()
+    return render(request, 'alumni_message.html', {'students': students})
 
 @login_required
 def student_message(request):   
-    return render(request, 'student_message.html')
+    alumnies = Alumni.objects.filter(is_approved=True)
+    return render(request, 'student_message.html', {'alumnies': alumnies})
+
+@login_required
+def chat_page(request, profile_type, reciever_id):
+    sender = request.user
+
+    if profile_type == 'student':
+        student = get_object_or_404(Student, id=reciever_id)
+        reciever = get_object_or_404(User, email=student.email)
+    elif profile_type == 'alumni':
+        alumni = get_object_or_404(Alumni, id=reciever_id)
+        reciever = get_object_or_404(User, email=alumni.email)
+    else:
+        print('reciever not found')
+
+    messages = Chat.objects.filter(
+        Q(sender=request.user, reciever=reciever) |
+        Q(sender=reciever, reciever=request.user)
+    ).order_by('time')
+
+    if request.method == 'POST':
+        sender = sender
+        message = request.POST.get('message')
+        reciever = reciever
+
+        try:
+            chat = Chat.objects.create(sender=sender, 
+             reciever=reciever, 
+             message= message
+            )
+            print('data inserted succesfully..!!!')
+        except ValueError as e:
+            print('value error aane {e}')
+
+    return render(request, 'chat_page.html', {'reciever': reciever, 'messages': messages})

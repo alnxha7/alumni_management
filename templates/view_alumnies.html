@@ -57,6 +57,7 @@ https://templatemo.com/tm-557-grad-school
         <li><a class='external' href="{% url 'student_events' %}">Events</a></li>
         <li><a class='external' href="{% url 'view_alumnies' %}">Alumnies</a></li>
         <li><a class='external' href="{% url 'student_profile' %}">My Profile</a></li>
+        <li><a class='external' href="{% url 'student_message' %}">Messages</a></li>
         <li><a class="external" href="{% url 'logout' %}">Logout</a></li>
         <!-- <li><a href="#section5">Video</a></li> -->
       </ul>
@@ -83,7 +84,6 @@ https://templatemo.com/tm-557-grad-school
                       <th>Phone Number</th>
                       <th>Image</th>
                       <th>Job Status</th>
-                      <th>Message</th>
                   </tr>
               </thead>
               <tbody>
@@ -96,10 +96,7 @@ https://templatemo.com/tm-557-grad-school
                     <td>{{ alum.number }}</td>
                     <td><img src="{{ alum.image.url }}" alt="Alumni Image" class="alumni-image"></td>
                     <td>
-                      <a href="{% url 'job_status' alumni_id=alum.id %}" class="btn btn-primary">Job__Status</a>
-                    </td>
-                    <td>
-                      <a href="{% url 'student_message' %}" class="btn btn-warning">Message</a>
+                      <a href="{% url 'job_status' alumni_id=alum.id %}" class="btn btn-primary">Job Status</a>
                     </td>
                     {% endfor %}
             </tbody>
