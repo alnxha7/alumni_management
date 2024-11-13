@@ -59,6 +59,7 @@ urlpatterns = [
     path('alumni_message/', views.alumni_message, name='alumni_message'),
     path('student_message/', views.student_message, name='student_message'),
     path('chat_page/<str:profile_type>/<int:reciever_id>/', views.chat_page, name='chat_page'),
+
 ]
 
 if settings.DEBUG:

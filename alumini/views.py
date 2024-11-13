@@ -533,11 +533,15 @@ def chat_page(request, profile_type, reciever_id):
     if profile_type == 'student':
         student = get_object_or_404(Student, id=reciever_id)
         reciever = get_object_or_404(User, email=student.email)
+        referrer = 'alumni_message'
     elif profile_type == 'alumni':
         alumni = get_object_or_404(Alumni, id=reciever_id)
         reciever = get_object_or_404(User, email=alumni.email)
+        referrer = 'student_message'
     else:
         print('reciever not found')
+
+    Chat.objects.filter(sender=reciever, reciever=sender).update(is_read=True)
 
     messages = Chat.objects.filter(
         Q(sender=request.user, reciever=reciever) |
@@ -558,4 +562,22 @@ def chat_page(request, profile_type, reciever_id):
         except ValueError as e:
             print('value error aane {e}')
 
-    return render(request, 'chat_page.html', {'reciever': reciever, 'messages': messages})
+    return render(request, 'chat_page.html', {'reciever': reciever, 'messages': messages, 'referrer': referrer})
+
+def mark_as_read(request, alumni_id):
+    print('working on read')
+    try:
+        alumni = Alumni.objects.get(id=alumni_id)
+        sender = get_object_or_404(User, email=alumni.email)
+
+        # Use filter() instead of get() to update multiple messages
+        chats = Chat.objects.filter(sender=sender, reciever=request.user, is_read=False)
+
+        for chat in chats:
+            chat.is_read = True
+            chat.save()
+
+        print('Marked as read successfully')
+    except Alumni.DoesNotExist:
+        print('Alumni does not exist')
+    
