@@ -20,6 +20,14 @@
     <link rel="stylesheet" href="../static/assets/css/owl.css">
     <link rel="stylesheet" href="../static/assets/css/lightbox.css">
     <style>
+      .notification-bubble {
+  background-color: red;
+  color: white;
+  font-size: 0.8rem;
+  border-radius: 50%;
+  padding: 0.3em 0.5em;
+
+}
       td {
             color: rgb(255, 255, 255);
             font-size: 1.2rem;
@@ -91,7 +99,11 @@ https://templatemo.com/tm-557-grad-school
                     <td>{{ stud.name }}</td>
                     <td><img src="{{ stud.image.url }}" class="student-image"></td>
                     <td>
-                      <a href="{% url 'chat_page' 'student' stud.id %}" class="btn btn-warning">Message</a>
+                      <a href="{% url 'chat_page' 'student' stud.id %}" class="btn btn-warning">Message
+                        {% if stud.unread_count > 0 %}
+                          <span class="notification-bubble">{{ stud.unread_count }}</span>
+                        {% endif %}
+                      </a>
                     </td>
                     {% endfor %}
             </tbody>

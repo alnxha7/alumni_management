@@ -501,12 +501,30 @@ def job_status(request, alumni_id):
 @login_required
 def alumni_message(request):
     students = Student.objects.all()
+
+    for student in students:
+        try:
+            user = get_object_or_404(User, email=student.email)
+            unread_count = Chat.objects.filter(reciever=request.user, sender=user, is_read=False).count()
+            student.unread_count = unread_count
+        except User.DoesNotExist:
+            student.unread_count = 0
     return render(request, 'alumni_message.html', {'students': students})
 
 @login_required
 def student_message(request):   
     alumnies = Alumni.objects.filter(is_approved=True)
-    return render(request, 'student_message.html', {'alumnies': alumnies})
+
+    for alumni in alumnies:
+        try:
+            # Get the user based on alumni email
+            user = get_object_or_404(User, email=alumni.email)
+            unread_count = Chat.objects.filter(reciever=request.user, sender=user, is_read=False).count()
+            alumni.unread_count = unread_count  # Add the unread count to each alumni object
+        except User.DoesNotExist:
+            alumni.unread_count = 0
+
+    return render(request, 'student_message.html', {'alumnies': alumnies, 'unread_count': unread_count})
 
 @login_required
 def chat_page(request, profile_type, reciever_id):

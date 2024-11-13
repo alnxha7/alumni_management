@@ -59,3 +59,4 @@ class Chat(models.Model):
     reciever = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recieved_messages')
     message = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
